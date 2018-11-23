@@ -40,6 +40,7 @@ def in_to_database(args):
 
     sheett = client.open('Test')
     if spende["type"] == "Kristal":
+        print(sheett.fetch_sheet_metadata())
         sheet = sheett.get_worksheet(0)
         try:
             day = sheet.row_values(1)
@@ -90,22 +91,25 @@ def in_to_database(args):
 
 
 def kontostand(user):
-    sheett = client.open('Test')
-    user = user[0].lower()
-    val = []
-    sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]
-    for s in sheet:
-        names = s.col_values(5)
-        user_ex = False
-        row = 0
-        for n in names:
-            row += 1
-            if n.lower() == user:
-                user_ex = True
-                break
-        if not user_ex:
-            return -2
-        else:
-            val.append(s.cell(row, 4).value)
-            val.append(s.title)
-    return val
+    if user:
+        sheett = client.open('Test')
+        user = user[0].lower()
+        val = []
+        sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]
+        for s in sheet:
+            names = s.col_values(5)
+            user_ex = False
+            row = 0
+            for n in names:
+                row += 1
+                if n.lower() == user:
+                    user_ex = True
+                    break
+            if not user_ex:
+                return -2
+            else:
+                val.append(s.cell(row, 4).value)
+                val.append(s.title)
+        return val
+    else:
+        return -2

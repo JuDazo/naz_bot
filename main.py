@@ -58,7 +58,7 @@ def on_ready():
 def kontostand(ret,message):
     if ret == -2:
         yield from client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=(
-            'Der angegebene Username %s konnte nicht in der Tabelle gefunden werden \n' % (spende["user"]))))
+            'Der angegebene Username konnte nicht in der Tabelle gefunden werden \n' )))
     else:
         yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=(
                 "Dein Kontostand beim "+ret[1]+" beträgt "+ret[0]+" und beim "+ret[3]+" beträgt er "+ret[2])))
@@ -67,25 +67,23 @@ def kontostand(ret,message):
 @client.event
 @asyncio.coroutine
 def on_message(message):
-    if str(message.channel) == STATICS.CHANNEL:
-        if str(message.author) != STATICS.BOT:
-            if message.attachments == []:
-                if message.content.lower().startswith(STATICS.Spende.lower()):
-                    args = message.content.split(" ")[1:]
-
-                    ret = into_GoogleTab.in_to_database(args)
-                    yield from in_to_database(args, client, ret,message)
-
-                if message.content.lower().startswith(STATICS.Konto.lower()):
+    if message.author.display_name != STATICS.BOT:
+        if not message.attachments:
+            if str(message.channel) == STATICS.CHANNEL:
+                    if message.content.lower().startswith(STATICS.Spende.lower()):
                         args = message.content.split(" ")[1:]
-                        ret = into_GoogleTab.kontostand(args)
-                        yield from kontostand(ret,message)
-                else:
-                    yield from client.send_message(message.channel,
-                                                   embed=discord.Embed(color=discord.Color.red(), description=
-                                                   (
-                                                       'Das angegebene Format der Spende war nicht Richtig du hast das Key Wort "Spende" vergessen\n bitte halte dich an das Format:'
-                                                       '\n"Spende Menge Art Username" \n Art = S für Siegel \n Art = K für Kristalle \nDanke :)')))
+                        ret = into_GoogleTab.in_to_database(args)
+                        yield from in_to_database(args, client, ret,message)
+                    elif message.content.lower().startswith(STATICS.Konto.lower()):
+                            args = message.content.split(" ")[1:]
+                            ret = into_GoogleTab.kontostand(args)
+                            yield from kontostand(ret,message)
+                    else:
+                        yield from client.send_message(message.channel,
+                                                       embed=discord.Embed(color=discord.Color.red(), description=
+                                                       (
+                                                           'Das angegebene Format der Spende war nicht Richtig du hast das Key Wort "Spende" vergessen\n bitte halte dich an das Format:'
+                                                           '\n"Spende Menge Art Username" \n Art = S für Siegel \n Art = K für Kristalle \nDanke :)')))
 
 
 
