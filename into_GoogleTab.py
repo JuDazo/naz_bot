@@ -40,21 +40,23 @@ def in_to_database(args):
 
     sheett = client.open('Test')
     if spende["type"] == "Kristal":
-        print(sheett.fetch_sheet_metadata())
-        sheet = sheett.get_worksheet(0)
-        try:
-            day = sheet.row_values(1)
-            names = sheet.col_values(5)
-        except Exception as e:
-            print(e + "Problem with day & names")
-            return -1
+        day_row = 1
+        metadaten = sheett.fetch_sheet_metadata()["sheets"]
+        for mdata in metadaten:
+            if mdata["properties"]["title"] == "Kristall-System":
+                sheet = sheett.get_worksheet(mdata["properties"]["index"])
 
     elif spende["type"] == "Siegel":
-        sheet = sheett.get_worksheet(1)
-        try:
-            day = sheet.row_values(2)
+            day_row = 2
+            metadaten = sheett.fetch_sheet_metadata()["sheets"]
+            for mdata in metadaten:
+                if mdata["properties"]["title"] == "Münzen-System":
+                    sheet = sheett.get_worksheet(mdata["properties"]["index"])
+
+    try:
+            day = sheet.row_values(day_row)
             names = sheet.col_values(5)
-        except Exception as e:
+    except Exception as e:
             print(e + "Problem with day & names")
             return -1
     column = 0
