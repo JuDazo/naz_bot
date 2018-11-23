@@ -55,21 +55,32 @@ def on_ready():
     yield from client.change_presence(game=discord.Game(name="Ich bin das spenden luder"))
 
 
+def kontostand(ret,message):
+    if ret == -2:
+        yield from client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=(
+            'Der angegebene Username %s konnte nicht in der Tabelle gefunden werden \n' % (spende["user"]))))
+    else:
+        yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=(
+                "Dein Kontostand beim "+ret[1]+" beträgt "+ret[0]+" und beim "+ret[3]+" beträgt er "+ret[2])))
+
+
 @client.event
 @asyncio.coroutine
 def on_message(message):
-    if str(message.author) != STATICS.BOT:
-        if message.attachments == []:
-            if str(message.channel) == STATICS.CHANNEL:
-                if message.content.lower().startswith(STATICS.PREFIX.lower()):
+    if str(message.channel) == STATICS.CHANNEL:
+        if str(message.author) != STATICS.BOT:
+            if message.attachments == []:
+                if message.content.lower().startswith(STATICS.Spende.lower()):
                     args = message.content.split(" ")[1:]
 
                     ret = into_GoogleTab.in_to_database(args)
                     yield from in_to_database(args, client, ret,message)
+
+                if message.content.lower().startswith(STATICS.Konto.lower()):
+                        args = message.content.split(" ")[1:]
+                        ret = into_GoogleTab.kontostand(args)
+                        yield from kontostand(ret,message)
                 else:
-                    #yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=
-                     #  ('Das angegebene Format der Spende war nicht Richtig bitte halte dich an das Format:'
-                      #   '\n"Spende Menge Art Username" \n Art = S für Siegel \n Art = K für Kristalle \nDanke :)')))
                     yield from client.send_message(message.channel,
                                                    embed=discord.Embed(color=discord.Color.red(), description=
                                                    (

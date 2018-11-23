@@ -87,3 +87,25 @@ def in_to_database(args):
 
 
     return val
+
+
+def kontostand(user):
+    sheett = client.open('Test')
+    user = user[0].lower()
+    val = []
+    sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]
+    for s in sheet:
+        names = s.col_values(5)
+        user_ex = False
+        row = 0
+        for n in names:
+            row += 1
+            if n.lower() == user:
+                user_ex = True
+                break
+        if not user_ex:
+            return -2
+        else:
+            val.append(s.cell(row, 4).value)
+            val.append(s.title)
+    return val
