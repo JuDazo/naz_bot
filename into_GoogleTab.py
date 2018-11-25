@@ -108,8 +108,16 @@ def in_to_database(args):
 
 
 def kontostand(user):
+    global scope
+    global creds
+    global client
     if user:
-        sheett = client.open('Nazgul')
+        try:
+            sheett = client.open('Nazgul')
+        except Exception as e:
+            print(e)
+            client = gspread.authorize(creds)
+            sheett = client.open('Nazgul')
         user = user[0].lower()
         val = []
         sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]
