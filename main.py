@@ -88,5 +88,5 @@ def on_message(message):
 
 
 
-
+into_GoogleTab.into_google_init()
 client.run(SECRET.TOKEN)

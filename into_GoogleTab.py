@@ -2,6 +2,10 @@ import gspread
 import time
 from oauth2client.service_account import ServiceAccountCredentials
 
+scope = None
+creds = None
+client = None
+
 wochen = {
     "Mon": "Mo",
     "Tue": "Di",
@@ -11,16 +15,23 @@ wochen = {
     "Sat": "Sa",
     "Sun": "So"
 }
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-client = gspread.authorize(creds)
+def into_google_init():
+    global scope
+    global creds
+    global client
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+    client = gspread.authorize(creds)
 
-
-wochentag = time.strftime("%a")
-wochentag = wochen[wochentag]
-w_string = wochentag + ".\xa0" + time.strftime("%d.%m")
 
 def in_to_database(args):
+    global scope
+    global creds
+    global client
+
+    wochentag = time.strftime("%a")
+    wochentag = wochen[wochentag]
+    w_string = wochentag + ".\xa0" + time.strftime("%d.%m")
     spende = {"user": None, "type": None, "value": None, "negativ" : False}
     for a in args:
         if a == "-":
@@ -37,8 +48,12 @@ def in_to_database(args):
     for e in spende:
         if spende[e] == None:
             return -3
-
-    sheett = client.open('Test')
+    try:
+        sheett = client.open('Nazgul')
+    except Exception as e:
+        print(e)
+        client = gspread.authorize(creds)
+        sheett = client.open('Nazgul')
     if spende["type"] == "Kristal":
         day_row = 1
         metadaten = sheett.fetch_sheet_metadata()["sheets"]
@@ -94,7 +109,7 @@ def in_to_database(args):
 
 def kontostand(user):
     if user:
-        sheett = client.open('Test')
+        sheett = client.open('Nazgul')
         user = user[0].lower()
         val = []
         sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]

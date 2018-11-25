@@ -1,4 +1,4 @@
 Spende = "Spende"
 Konto = "Kontostand"
-CHANNEL = "naz-spenden-test"
+CHANNEL = "water-quests"
 BOT = "naz_spenden_bot"
