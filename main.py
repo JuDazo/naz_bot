@@ -59,6 +59,9 @@ def kontostand(ret,message):
     if ret == -2:
         yield from client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=(
             'Der angegebene Username konnte nicht in der Tabelle gefunden werden \n' )))
+    elif ret == 0:
+        yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=(
+            'die geöffnete q wurde eingetragen \n' )))
     else:
         yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=(
                 "Dein Kontostand beim "+ret[1]+" beträgt "+ret[0]+" und beim "+ret[3]+" beträgt er "+ret[2])))
@@ -81,7 +84,7 @@ def on_message(message):
                     elif message.content.lower().startswith(STATICS.Eintag):
                             args = message.content.split(" ")[1:]
                             ret = into_GoogleTab.oeffnen(args)
-                            #yield from kontostand(ret,message)
+                            yield from kontostand(ret,message)
                     else:
                         yield from client.send_message(message.channel,
                         embed=discord.Embed(color=discord.Color.red(), description=
