@@ -50,6 +50,11 @@ def get_Data(type):
             if mdata["properties"]["title"] == "Münzen-System":
                 sheet = sheett.get_worksheet(mdata["properties"]["index"])
                 return sheet
+    elif type == "ein":
+        for mdata in metadaten:
+            if mdata["properties"]["title"] == "vgl-SzuE":
+                sheet = sheett.get_worksheet(mdata["properties"]["index"])
+                return sheet
 
 def in_to_database(args):
     wochentag = time.strftime("%a")
@@ -140,3 +145,37 @@ def kontostand(user):
         return val
     else:
         return -2
+
+def oeffnen(args)
+        wochentag = time.strftime("%a")
+        wochentag = wochen[wochentag]
+        w_string = wochentag + ".\xa0" + time.strftime("%d.%m")
+        user =  args[0]
+        sheet = get_Data("ein")
+        ry:
+                day = sheet.row_values(1)
+                names = sheet.col_values(1)
+        except Exception as e:
+                print(e + "Problem with day & names")
+                return -1
+        column = 0
+        day_ex = False
+        for d in day:
+            column+=1
+            if d == w_string:
+                day_ex = True
+                break
+
+        row = 0
+        user_ex = False
+        for n in names:
+            row +=1
+            if n == user:
+                user_ex = True
+                break
+        if not user_ex:
+            return -2
+        curr = sheet.cell(row,column).value
+        curr = "="+curr+"1"
+        sheet.update_cell(row,column,new)
+        return 0
