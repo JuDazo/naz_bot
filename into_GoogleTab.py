@@ -15,6 +15,7 @@ wochen = {
     "Sat": "Sa",
     "Sun": "So"
 }
+
 def into_google_init():
     global scope
     global creds
@@ -24,11 +25,33 @@ def into_google_init():
     client = gspread.authorize(creds)
 
 
-def in_to_database(args):
+def get_Data(type):
     global scope
     global creds
     global client
 
+    try:
+        sheett = client.open('Nazgul')
+    except Exception as e:
+        print(e)
+        client = gspread.authorize(creds)
+        sheett = client.open('Nazgul')
+
+    metadaten = sheett.fetch_sheet_metadata()["sheets"]
+
+    if type == "Kristal":
+        for mdata in metadaten:
+            if mdata["properties"]["title"] == "Kristall-System":
+                sheet = sheett.get_worksheet(mdata["properties"]["index"])
+                return sheet
+
+    elif type == "Siegel":
+        for mdata in metadaten:
+            if mdata["properties"]["title"] == "Münzen-System":
+                sheet = sheett.get_worksheet(mdata["properties"]["index"])
+                return sheet
+
+def in_to_database(args):
     wochentag = time.strftime("%a")
     wochentag = wochen[wochentag]
     w_string = wochentag + ".\xa0" + time.strftime("%d.%m")
@@ -40,40 +63,25 @@ def in_to_database(args):
             spende["value"] = int(a)
         elif str(a) == "K" or str(a) == "k":
             spende["type"] = "Kristal"
+            day_row = 1
         elif str(a) == "S" or str(a) == "s":
             spende["type"] = "Siegel"
+            day_row = 2
         else:
             spende["user"] = str(a).lower()
 
     for e in spende:
         if spende[e] == None:
             return -3
-    try:
-        sheett = client.open('Nazgul')
-    except Exception as e:
-        print(e)
-        client = gspread.authorize(creds)
-        sheett = client.open('Nazgul')
-    if spende["type"] == "Kristal":
-        day_row = 1
-        metadaten = sheett.fetch_sheet_metadata()["sheets"]
-        for mdata in metadaten:
-            if mdata["properties"]["title"] == "Kristall-System":
-                sheet = sheett.get_worksheet(mdata["properties"]["index"])
 
-    elif spende["type"] == "Siegel":
-            day_row = 2
-            metadaten = sheett.fetch_sheet_metadata()["sheets"]
-            for mdata in metadaten:
-                if mdata["properties"]["title"] == "Münzen-System":
-                    sheet = sheett.get_worksheet(mdata["properties"]["index"])
-
+    sheet = get_Data(spende["type"])
     try:
             day = sheet.row_values(day_row)
             names = sheet.col_values(5)
     except Exception as e:
             print(e + "Problem with day & names")
             return -1
+
     column = 0
     day_ex = False
     for d in day:
@@ -81,6 +89,7 @@ def in_to_database(args):
         if d == w_string:
             day_ex = True
             break
+
     row=0
     user_ex = False
     for n in names:
@@ -92,6 +101,7 @@ def in_to_database(args):
     if not user_ex:
         return -2
     elif not day_ex:
+        print("Day is "+str(w_string))
         return -1
 
     curr = sheet.cell(row,column).value.replace(".", "")
@@ -99,11 +109,9 @@ def in_to_database(args):
         new = "=" + curr + "-" + str(spende["value"])
     else:
         new = "="+curr+"+"+str(spende["value"])
+
     sheet.update_cell(row,column,new)
-
     val = sheet.cell(row, 4).value
-
-
     return val
 
 
@@ -112,16 +120,10 @@ def kontostand(user):
     global creds
     global client
     if user:
-        try:
-            sheett = client.open('Nazgul')
-        except Exception as e:
-            print(e)
-            client = gspread.authorize(creds)
-            sheett = client.open('Nazgul')
         user = user[0].lower()
         val = []
-        sheet = [sheett.get_worksheet(0), sheett.get_worksheet(1)]
-        for s in sheet:
+        sheets = [get_Data("Kristal"),get_Data("Siegel")]
+        for s in sheets:
             names = s.col_values(5)
             user_ex = False
             row = 0

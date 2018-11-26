@@ -45,6 +45,7 @@ def in_to_database(args, client, ret, message):
         else:
             yield from client.send_message(message.author, embed=discord.Embed(color=discord.Color.red(), description=(
                     'Du hast ein guthaben von: %s %s )' % (ret.replace("+", ""), spende["type"]))))
+
 @client.event
 @asyncio.coroutine
 def on_ready():
@@ -80,13 +81,9 @@ def on_message(message):
                             yield from kontostand(ret,message)
                     else:
                         yield from client.send_message(message.channel,
-                                                       embed=discord.Embed(color=discord.Color.red(), description=
-                                                       (
-                                                           'Das angegebene Format der Spende war nicht Richtig du hast das Key Wort "Spende" vergessen\n bitte halte dich an das Format:'
-                                                           '\n"Spende Menge Art Username" \n Art = S für Siegel \n Art = K für Kristalle \nDanke :)')))
-
-
-
+                        embed=discord.Embed(color=discord.Color.red(), description=
+                        ('Das angegebene Format der Spende war nicht Richtig du hast das Key Wort "Spende" vergessen\n bitte halte dich an das Format:'
+                        '\n"Spende Menge Art Username" \n Art = S für Siegel \n Art = K für Kristalle \nDanke :)')))
 
 into_GoogleTab.into_google_init()
 client.run(SECRET.TOKEN)
