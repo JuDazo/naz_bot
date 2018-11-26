@@ -23,8 +23,6 @@ def in_to_database(args, client, ret, message):
 
     if spende["negativ"]:
         spende["value"] = "-"+str(spende["value"])
-    if ret == 0:
-        break
     if ret == -1:
         yield from client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=(
         'Die Spende konnte nicht eingetragen werden bitte melde dich bei JuDazo das du den Fehler mit den Code -1 gefunden hast danke')))
@@ -83,7 +81,7 @@ def on_message(message):
                     elif message.content.lower().startswith(STATICS.Eintag):
                             args = message.content.split(" ")[1:]
                             ret = into_GoogleTab.oeffnen(args)
-                            yield from kontostand(ret,message)
+                            #yield from kontostand(ret,message)
                     else:
                         yield from client.send_message(message.channel,
                         embed=discord.Embed(color=discord.Color.red(), description=

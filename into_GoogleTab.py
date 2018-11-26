@@ -146,13 +146,13 @@ def kontostand(user):
     else:
         return -2
 
-def oeffnen(args)
+def oeffnen(args):
         wochentag = time.strftime("%a")
         wochentag = wochen[wochentag]
         w_string = wochentag + ".\xa0" + time.strftime("%d.%m")
         user =  args[0]
         sheet = get_Data("ein")
-        ry:
+        try:
                 day = sheet.row_values(1)
                 names = sheet.col_values(1)
         except Exception as e:
@@ -176,6 +176,6 @@ def oeffnen(args)
         if not user_ex:
             return -2
         curr = sheet.cell(row,column).value
-        curr = "="+curr+"1"
+        new = "="+curr+"+"+"1"
         sheet.update_cell(row,column,new)
         return 0
