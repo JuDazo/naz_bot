@@ -9,19 +9,20 @@ client = discord.Client()
 @asyncio.coroutine
 def ret_val(args, client, ret, message):
         spende = {"user": None, "type": None, "value": None, "negativ" : None}
-        for a in args:
-            if a == "-":
-                spende["negativ"] = True
-            elif a.isdigit() or a.lstrip("-").isdigit() or a.lstrip("+").isdigit():
-                spende["value"] = int(a)
-            elif str(a) == "K" or str(a) == "k":
-                spende["type"] = "Kristal"
-            elif str(a) == "S" or str(a) == "s":
-                spende["type"] = "Siegel"
-            else:
-                spende["user"] = str(a).lower()
-        if spende["negativ"]:
-            spende["value"] = "-"+str(spende["value"])
+        if args:
+            for a in args:
+                if a == "-":
+                    spende["negativ"] = True
+                elif a.isdigit() or a.lstrip("-").isdigit() or a.lstrip("+").isdigit():
+                    spende["value"] = int(a)
+                elif str(a) == "K" or str(a) == "k":
+                    spende["type"] = "Kristal"
+                elif str(a) == "S" or str(a) == "s":
+                    spende["type"] = "Siegel"
+                else:
+                    spende["user"] = str(a).lower()
+            if spende["negativ"]:
+                spende["value"] = "-"+str(spende["value"])
 
         if ret == -1:
             yield from client.send_message(message.channel, embed=discord.Embed(color=discord.Color.red(), description=(

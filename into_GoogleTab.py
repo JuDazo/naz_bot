@@ -58,15 +58,6 @@ def get_Data(type):
         print("daten blatt nicht vorhabend")
         return -1
 
-def get_day_name(sheet,day_row):
-        try:
-                day = sheet.row_values(day_row)
-                names = sheet.col_values(5)
-                return [day,names]
-        except Exception as e:
-                print(e + "Problem with tabel")
-                return [-1,-1]
-
 def in_to_database(args):
     wochentag = time.strftime("%a")
     wochentag = wochen[wochentag]
@@ -96,7 +87,7 @@ def in_to_database(args):
             day = sheet.row_values(day_row)
             names = sheet.col_values(5)
     except Exception as e:
-            print(e + "Problem with day & names")
+            print(str(e) + "Problem with day & names")
             return -1
 
     column = 0
@@ -142,9 +133,11 @@ def kontostand(user):
         if sheets[0] ==-1 or sheets[1] ==-1:
             return -1
         for s in sheets:
-            names = get_day_name(s,0)[1]
-            if names == -1:
-                return -1
+            try:
+                    names = s.col_values(5)
+            except Exception as e:
+                    print(str(e) + "Problem with day & names")
+                    return -1
             user_ex = False
             row = 0
             for n in names:
@@ -169,9 +162,11 @@ def oeffnen(args):
         sheet = get_Data("ein")
         if sheet ==-1:
             return -1
-        day = get_day_name(sheet,1)[0]
-        names = get_day_name(sheet,1)[1]
-        if day == -1 or names == -1:
+        try:
+                day = sheet.row_values(1)
+                names = sheet.col_values(1)
+        except Exception as e:
+                print(str(e) + "Problem with day & names")
                 return -1
 
         column = 0

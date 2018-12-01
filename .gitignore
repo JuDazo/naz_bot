@@ -3,3 +3,5 @@ SECRET.py
 .idea/*
 __*
 venv/*
+*.sh
+*.txt
