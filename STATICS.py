@@ -1,5 +1,7 @@
 Spende = "Spende"
 Konto = "Kontostand"
 Eintag = "o"
-CHANNEL = "water-quests"
+CHANNELW = "water-quests"
+CHANNELF = "fire-quests"
 BOT = "naz_spenden_bot"
+CHANNELA = "air-quests"

@@ -73,7 +73,8 @@ def on_ready():
 def on_message(message):
     if message.author.display_name != STATICS.BOT:
         if not message.attachments:
-            if str(message.channel) == STATICS.CHANNEL:
+            print(message.channel)
+            if str(message.channel) == STATICS.CHANNELW or str(message.channel) == STATICS.CHANNELF or str(message.channel) == STATICS.CHANNELA:
                     if message.content.lower().startswith(STATICS.Spende.lower()):
                         args = message.content.split(" ")[1:]
                         ret = into_GoogleTab.in_to_database(args)

@@ -80,9 +80,14 @@ def in_to_database(args):
     for e in spende:
         if spende[e] == None:
             return -3
+
+    if spende["user"] == "":
+        return -3
+
     sheet = get_Data(spende["type"])
     if sheet == -1:
         return -1
+
     try:
             day = sheet.row_values(day_row)
             names = sheet.col_values(5)
@@ -100,6 +105,7 @@ def in_to_database(args):
 
     row=0
     user_ex = False
+
     for n in names:
         row+=1
         if n.lower() == spende["user"]:
