@@ -73,7 +73,6 @@ def on_ready():
 def on_message(message):
     if message.author.display_name != STATICS.BOT:
         if not message.attachments:
-            print(message.channel)
             if str(message.channel) == STATICS.CHANNELW or str(message.channel) == STATICS.CHANNELF or str(message.channel) == STATICS.CHANNELA:
                     if message.content.lower().startswith(STATICS.Spende.lower()):
                         args = message.content.split(" ")[1:]
@@ -89,6 +88,10 @@ def on_message(message):
                             yield from ret_val(None,client,ret,message)
                     else:
                         yield from ret_val(None,client,-3,message)
+            elif str(message.channel) == STATICS.KUMMER:
+                yield from client.send_message(client.get_channel('536127648368427008'), embed=discord.Embed(color=discord.Color.red(), description=(message.content)))
+                yield from client.delete_message(message)
+
 
 into_GoogleTab.into_google_init()
 client.run(SECRET.TOKEN)
